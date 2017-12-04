@@ -2,7 +2,7 @@
 /**************************************************************************/
 
 #ifndef WONNT_H
-#define WONNT_H     8   /* Version 8 */
+#define WONNT_H     11  /* Version 11 */
 
 #if defined(_WIN32) && !defined(WON_WITHOUT_WIN)
     #ifndef _INC_WINDOWS
@@ -31,17 +31,15 @@
     #include "pstdint.h"
 #endif
 
-typedef int8_t CHAR;
+typedef int8_t CHAR, SCHAR;
 typedef uint8_t BYTE, UCHAR;
 typedef int16_t SHORT;
 typedef uint16_t WORD, USHORT;
 typedef int32_t LONG;
 typedef uint32_t DWORD, ULONG;
-typedef int32_t INT, BOOL;
-typedef uint32_t UINT;
+
 typedef int64_t LONGLONG;
 typedef uint64_t ULONGLONG, DWORDLONG;
-
 #ifdef _WIN64
     typedef int64_t LONG_PTR;
     typedef uint64_t ULONG_PTR, DWORD_PTR;
@@ -50,7 +48,46 @@ typedef uint64_t ULONGLONG, DWORDLONG;
     typedef ULONG ULONG_PTR, DWORD_PTR;
 #endif
 
+typedef int INT, BOOL;
+typedef unsigned int UINT;
 typedef BYTE BOOLEAN;
+typedef void *HANDLE;
+
+typedef wchar_t WCHAR;
+
+#ifndef C_ASSERT
+    #define C_ASSERT(x) \
+        typedef char WON_STATIC_ASSERT_##__LINE__[(x) ? 1 : -1]
+#endif
+
+C_ASSERT(sizeof(CHAR) == 1);
+C_ASSERT(sizeof(SCHAR) == 1);
+C_ASSERT(sizeof(UCHAR) == 1);
+C_ASSERT(sizeof(BYTE) == 1);
+
+C_ASSERT(sizeof(SHORT) == 2);
+C_ASSERT(sizeof(USHORT) == 2);
+C_ASSERT(sizeof(WORD) == 2);
+
+C_ASSERT(sizeof(LONG) == 4);
+C_ASSERT(sizeof(ULONG) == 4);
+C_ASSERT(sizeof(DWORD) == 4);
+
+C_ASSERT(sizeof(LONGLONG) == 8);
+C_ASSERT(sizeof(ULONGLONG) == 8);
+C_ASSERT(sizeof(DWORDLONG) == 8);
+
+C_ASSERT(sizeof(INT) == sizeof(int));
+C_ASSERT(sizeof(UINT) == sizeof(unsigned int));
+
+C_ASSERT(sizeof(BOOL) == 4);
+C_ASSERT(sizeof(BOOLEAN) == 1);
+
+C_ASSERT(sizeof(HANDLE) == sizeof(void *));
+
+C_ASSERT(sizeof(WCHAR) == sizeof(wchar_t));
+
+typedef INT HFILE;
 
 /**************************************************************************/
 
