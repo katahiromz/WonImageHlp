@@ -3,9 +3,15 @@
 /**************************************************************************/
 
 #ifndef WONIMAGEHLP_H_
-#define WONIMAGEHLP_H_     3   /* Version 3 */
+#define WONIMAGEHLP_H_     5   /* Version 5 */
 
-#include "wonnt.h"
+#if !defined(_WIN32) || (defined(_WONVER) && _WONVER == 0)
+    #include "wonnt.h"
+#else
+    #ifndef _INC_WINDOWS
+        #include <windows.h>
+    #endif
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -51,7 +57,7 @@ WonImageDirectoryEntryToDataEx(
 
 /**************************************************************************/
 
-#ifdef _WONVER
+#if !defined(_WIN32) || (defined(_WONVER) && _WONVER == 0)
     #define ImageNtHeader WonImageNtHeader
     #define ImageRvaToSection WonImageRvaToSection
     #define ImageRvaToVa WonImageRvaToVa
