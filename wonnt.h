@@ -2,10 +2,10 @@
 /**************************************************************************/
 
 #ifndef WONNT_H
-#define WONNT_H     12  /* Version 12 */
+#define WONNT_H     17  /* Version 17 */
 
 #ifndef _INC_WINDOWS
-#if defined(_WIN32) && !defined(_WONVER)
+#if defined(_WIN32) && !defined(_WONVER) && !defined(WONVER)
     #include <windows.h>
 #else
 
@@ -41,17 +41,24 @@ typedef int32_t INT, BOOL;
 typedef uint32_t UINT;
 typedef int64_t LONGLONG;
 typedef uint64_t ULONGLONG, DWORDLONG;
+typedef void *HANDLE;
 
-/* NOTE: Please think the case of sizeof(wchar_t) != 2. */
-typedef wchar_t WCHAR;
-
-#ifdef _WIN64
-    typedef int64_t LONG_PTR;
-    typedef uint64_t ULONG_PTR, DWORD_PTR;
-#else
-    typedef LONG LONG_PTR;
-    typedef ULONG ULONG_PTR, DWORD_PTR;
+// WCHAR
+#ifndef __WCHAR_DEFINED
+    #define __WCHAR_DEFINED
+    #ifdef _WIN32
+        typedef wchar_t WCHAR;
+    #else
+        #if __cplusplus >= 201103L
+            typedef char16_t WCHAR;
+        #else
+            typedef uint16_t WCHAR;
+        #endif
+    #endif
 #endif
+
+typedef intptr_t INT_PTR, LONG_PTR;
+typedef uintptr_t UINT_PTR, ULONG_PTR, DWORD_PTR;
 
 typedef BYTE BOOLEAN;
 
@@ -62,6 +69,21 @@ typedef BYTE BOOLEAN;
 #endif
 
 typedef INT HFILE;
+
+#ifndef _HRESULT_DEFINED
+    #define _HRESULT_DEFINED
+    typedef LONG HRESULT;
+#endif
+
+#ifndef _LCID_DEFINED
+    #define _LCID_DEFINED
+    typedef DWORD LCID;
+#endif
+
+#ifndef _LANGID_DEFINED
+    #define _LANGID_DEFINED
+    typedef WORD LANGID;
+#endif
 
 #define C_ASSERT(x)  typedef char WONNT_STATIC_ASSERT_##__LINE__[(x) ? 1 : -1]
 
@@ -90,7 +112,26 @@ C_ASSERT(sizeof(BOOLEAN) == 1);
 
 C_ASSERT(sizeof(HANDLE) == sizeof(void *));
 
-C_ASSERT(sizeof(WCHAR) == sizeof(wchar_t));
+C_ASSERT(sizeof(WCHAR) == 2);
+
+C_ASSERT(sizeof(HRESULT) == 4);
+
+C_ASSERT(sizeof(LANGID) == 2);
+C_ASSERT(sizeof(LCID) == 4);
+
+C_ASSERT(sizeof(INT_PTR) == sizeof(void *));
+C_ASSERT(sizeof(LONG_PTR) == sizeof(void *));
+C_ASSERT(sizeof(UINT_PTR) == sizeof(void *));
+C_ASSERT(sizeof(ULONG_PTR) == sizeof(void *));
+C_ASSERT(sizeof(DWORD_PTR) == sizeof(void *));
+
+/**************************************************************************/
+
+#ifndef S_OK
+    #define S_OK ((HRESULT)0x00000000)
+    #define S_FALSE ((HRESULT)0x00000001)
+    #define E_FAIL ((HRESULT)0x80004005)
+#endif
 
 /**************************************************************************/
 
@@ -348,6 +389,6 @@ typedef struct {
 
 /**************************************************************************/
 
-#endif  /* !(defined(_WIN32) && !defined(_WONVER)) */
+#endif  /* !(defined(_WIN32) && !defined(_WONVER) && !defined(WONVER)) */
 #endif  /* ndef _INC_WINDOWS */
 #endif  /* ndef WONNT_H */
